@@ -123,10 +123,13 @@ function animate() {
 
   if (intersects.length > 0) {
     console.log(intersects[0].face); //Lists the raycasting attributes....many of them.
-    intersects[0].object.geometry.attributes.color.setX(intersects[0].face.a, 0);
-    intersects[0].object.geometry.attributes.color.setX(intersects[0].face.b, 0);
-    intersects[0].object.geometry.attributes.color.setX(intersects[0].face.c, 0);
-    intersects[0].object.geometry.attributes.color.needsUpdate = true;
+
+    //deconstructor
+    const {color} = intersects[0].object.geometry.attributes;
+    color.setX(intersects[0].face.a, 0);
+    color.setX(intersects[0].face.b, 0);
+    color.setX(intersects[0].face.c, 0);
+    color.needsUpdate = true;
   }
   // console.log(intersects);
   // planeMesh.rotation.y += 0.001;
