@@ -126,9 +126,21 @@ function animate() {
 
     //deconstructor
     const {color} = intersects[0].object.geometry.attributes;
+
+    //Vertex 1
     color.setX(intersects[0].face.a, 0);
+    color.setY(intersects[0].face.a, 0);
+    color.setZ(intersects[0].face.a, 1);
+
+    //Vertex 2
     color.setX(intersects[0].face.b, 0);
+    color.setY(intersects[0].face.b, 0);
+    color.setZ(intersects[0].face.b, 1);
+
+    //Vertex 3
     color.setX(intersects[0].face.c, 0);
+    color.setY(intersects[0].face.c, 0);
+    color.setZ(intersects[0].face.c, 1);
     color.needsUpdate = true;
   }
   // console.log(intersects);
