@@ -15,16 +15,16 @@ console.log(gsap);
 
 const world = {
   plane: {
-    width: 10,
-    height: 10,
-    widthSegments: 10,
-    heightSegments: 10,
+    width: 400,
+    height: 400,
+    widthSegments: 50,
+    heightSegments: 50,
   },
 };
-gui.add(world.plane, "width", 1, 20).onChange(generatePlane);
-gui.add(world.plane, "height", 1, 20).onChange(generatePlane);
-gui.add(world.plane, "widthSegments", 1, 20).onChange(generatePlane);
-gui.add(world.plane, "heightSegments", 1, 20).onChange(generatePlane);
+gui.add(world.plane, "width", 1, 500).onChange(generatePlane);
+gui.add(world.plane, "height", 1, 500).onChange(generatePlane);
+gui.add(world.plane, "widthSegments", 1, 100).onChange(generatePlane);
+gui.add(world.plane, "heightSegments", 1, 100).onChange(generatePlane);
 
 //function that keeps the set values of each object attribute of the plane.
 function generatePlane() {
@@ -38,15 +38,22 @@ function generatePlane() {
 
   //Creates points on the plane
   const { array } = planeMesh.geometry.attributes.position;
-  for (let a = 0; a < array.length; a += 3) {
+  const randomValues = [];
+  for (let a = 0; a < array.length; a++) {
     const x = array[a];
     const y = array[a + 1];
     const z = array[a + 2];
 
-    array[a + 2] = z + Math.random();
+    if (a % 3 === 0) {
+      array[a] = x + (Math.random() - 0.5) * 1.1;
+      array[a + 1] = y + (Math.random() - 0.5) * 1.1;
+      array[a + 2] = z + (Math.random() - 0.5) * 1.1;
+    }
+    randomValues.push(Math.random() * Math.PI * 2);
   }
-
-  
+  planeMesh.geometry.attributes.position.randomValues = randomValues;
+  planeMesh.geometry.attributes.position.originalPosition =
+    planeMesh.geometry.attributes.position.array;
   const colors = [];
   for (let x = 0; x < planeMesh.geometry.attributes.position.count; x++) {
     colors.push(0, 0.19, 0.4);
@@ -79,9 +86,9 @@ document.body.appendChild(renderer.domElement);
 // const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
 // scene.add(boxMesh);
 
-camera.position.z = 5;
+camera.position.z = 15;
 
-const planeGeometry = new THREE.PlaneGeometry(5, 5, 10, 10);
+const planeGeometry = new THREE.PlaneGeometry(25, 25, 25, 25);
 const planeMaterial = new THREE.MeshPhongMaterial({
   side: THREE.DoubleSide,
   flatShading: true, //True or false value, not THREE.FlatShading....
@@ -91,37 +98,14 @@ const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 scene.add(planeMesh);
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(0, 0, 1);
+light.position.set(0, 1, 1);
 scene.add(light);
 
 const backLight = new THREE.DirectionalLight(0xffffff, 1);
 scene.add(backLight);
 backLight.position.set(0, 0, -1);
 
-const { array } = planeMesh.geometry.attributes.position;
-
-for (let a = 0; a < array.length; a += 3) {
-  const x = array[a];
-  const y = array[a + 1];
-  const z = array[a + 2];
-
-  array[a] = x + (Math.random() - 0.5);
-  array[a + 1] = y + (Math.random() - 0.5);
-  array[a + 2] = z + Math.random();
-}
-
-planeMesh.geometry.attributes.position.originalPosition =
-    planeMesh.geometry.attributes.position.array;
-
-const colors = [];
-for (let x = 0; x < planeMesh.geometry.attributes.position.count; x++) {
-  colors.push(0, 0.19, 0.4);
-}
-
-planeMesh.geometry.setAttribute(
-  "color",
-  new THREE.BufferAttribute(new Float32Array(colors), 3)
-);
+generatePlane();
 // console.log(planeMesh.geometry.attributes);
 
 new OrbitControls(camera, renderer.domElement);
@@ -137,11 +121,17 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
   raycasting.setFromCamera(mouse, camera);
-
-  const { array, originalPosition } = planeMesh.geometry.attributes.position;
+  frame += 0.01;
+  const { array, originalPosition, randomValues } =
+    planeMesh.geometry.attributes.position;
 
   for (let x = 0; x < array.length; x += 3) {
-    array[x] = originalPosition[x] + Math.cos(frame);
+    //X Values
+    array[x] = originalPosition[x] + Math.cos(frame + randomValues[x]) * 0.05;
+
+    //Y Values
+    array[x + 1] =
+      originalPosition[x + 1] + Math.cos(frame + randomValues[x + 1]) * 0.05;
   }
 
   planeMesh.geometry.attributes.position.needsUpdate = true;

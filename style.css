@@ -4,3 +4,43 @@
   box-sizing: border-box;
 }
 
+.forefront{
+  position:absolute;
+}
+
+/* color */
+.fc-white{
+  color: white;
+}
+/* size */
+.fs-100px{
+  font-size: 100px;
+}
+
+.fs-44px{
+  font-size: 44px;
+}
+
+.fs-20px{
+  font-size: 20px;
+}
+
+button{
+ padding: 1.2em;
+ border-radius: 1em;
+ background-color: transparent;
+ border-color: white;
+ color: white;
+ text-transform:uppercase;
+}
+
+
+.uppercase{
+  text-transform: uppercase;
+}
+.center{
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
